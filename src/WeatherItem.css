@@ -1,0 +1,15 @@
+.WeatherItem {
+  margin: 1em;
+  min-width: 200px;
+  text-align: center;
+  border: 1px solid #eee;
+  padding: 1em;
+}
+
+.WeatherItem--name {
+  margin-top: 0;
+}
+
+.WeatherItem--votes {
+  text-align: left;
+}
