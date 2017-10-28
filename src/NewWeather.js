@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import { database } from './firebase';
 import './NewWeather.css';
-import xhr from 'xhr';
+import axios from 'axios';
+// import xhr from 'xhr';
 
 class NewWeather extends Component {
   constructor() {
     super();
     this.state = {
       name: '',
-      data: {}
+      data: ''
     };
 
     this.weatherRef = database.ref('/weather'); 
@@ -24,26 +25,35 @@ class NewWeather extends Component {
 
     var self = this;
 
-    xhr({
-      url: url
-    }, (err, data) => {
-      self.setState({
-        data: JSON.parse(data.body)
-      });
-    });
+    // xhr({
+    //   url: url
+    // }, (err, data) => {
+    //   self.setState({
+    //     data: JSON.parse(data.body)
+    //   });
+    // });
 
-    var currentTemp = '';
-    if (this.state.data.list) {
-      currentTemp = this.state.data.list[0].main.temp;
-    }
+    axios.get(url)
+      .then(
+        (results) => {
+          self.setState({
+            data: results.data.list[0].main.temp
+          });
+        }
+      );
+
+    // var currentTemp = '';
+    // if (this.state.data) {
+    //   currentTemp = this.state.data.list[0].main.temp;
+    // }
     
-    name = name + " " + currentTemp + "°C";
+    // name = name + " " + currentTemp + "°C";
 
-    this.setState({name: name});
+    // this.setState({name: name});
 
-    console.log(name);
+    console.log(this.state.data);
 
-    this.weatherRef.push({ name: this.state.name });
+    this.weatherRef.push({ name: this.state.name + " " + this.state.data });
   }
 
   render() {
