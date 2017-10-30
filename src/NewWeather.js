@@ -9,12 +9,14 @@ class NewWeather extends Component {
     super();
     this.state = {
       name: '',
-      data: ''
+      data: '',
+      dataF: ''
     };
 
     this.weatherRef = database.ref('/weather'); 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.seveTemper = this.seveTemper.bind(this);
+    this.switchMetrik = this.switchMetrik.bind(this);
   }
 
   getTemper(name) {
@@ -40,12 +42,15 @@ class NewWeather extends Component {
 
     this.getTemper(name);
 
-    console.log("temp", this.state.data);
-
   }
 
   seveTemper() {
     this.weatherRef.push({ name: this.state.name + " " + this.state.data });    
+  }
+
+  switchMetrik() {
+    // var f = this.state.data * 9 / 5 + 32;
+    console.log("switchMetrik");
   }
 
   render() {
@@ -62,10 +67,25 @@ class NewWeather extends Component {
             placeholder="Temperature in the city"
             onChange={(event) => this.setState({ name: event.target.value })}
           />
+          {this.state.data ?
+            <div className="temp">
+              <div className="temp-switch">
+                <label className="switch-light switch-candy-yellow"
+                  onClick=  {this.switchMetrik}>
+                  <input type="checkbox" />
+
+                  <span>
+                    <span>°C</span>
+                    <span>°F</span>
+                    <a></a>
+                  </span>
+                </label>
+              </div>
+            </div>
+            : null}
 
           <p className="temp-wrapper">
             <span className="temp">{ name }  { data }</span>
-            <span className="temp-symbol">°C</span>
           </p>
 
           <button

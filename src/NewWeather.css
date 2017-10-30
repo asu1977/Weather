@@ -1,3 +1,9 @@
 .NewWeather {
   margin-bottom: 1em;
 }
+
+.temp-switch {
+  margin-bottom: 1em;
+  width: 150px
+}
+
