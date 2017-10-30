@@ -14,68 +14,74 @@ class NewWeather extends Component {
 
     this.weatherRef = database.ref('/weather'); 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.seveTemper = this.seveTemper.bind(this);
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-    var name = encodeURIComponent(this.state.name);
+  getTemper(name) {
     var urlPrefix = 'http://api.openweathermap.org/data/2.5/forecast?q=';
     var urlSuffix = '&APPID=3425fac33b452fd80674320f618f5dfb&units=metric';
     var url = urlPrefix + name + urlSuffix;
 
     var self = this;
 
-    // xhr({
-    //   url: url
-    // }, (err, data) => {
-    //   self.setState({
-    //     data: JSON.parse(data.body)
-    //   });
-    // });
+    axios.get(url, 500)
+    .then(
+      (results) => {
+        self.setState({
+          data: results.data.list[0].main.temp
+        });
+      }
+    );
+  }
 
-    axios.get(url)
-      .then(
-        (results) => {
-          self.setState({
-            data: results.data.list[0].main.temp
-          });
-        }
-      );
+  handleSubmit(event) {
+    event.preventDefault();
+    var name = encodeURIComponent(this.state.name);
 
-    // var currentTemp = '';
-    // if (this.state.data) {
-    //   currentTemp = this.state.data.list[0].main.temp;
-    // }
-    
-    // name = name + " " + currentTemp + "°C";
+    this.getTemper(name);
 
-    // this.setState({name: name});
+    console.log("temp", this.state.data);
 
-    console.log(this.state.data);
+  }
 
-    this.weatherRef.push({ name: this.state.name + " " + this.state.data });
+  seveTemper() {
+    this.weatherRef.push({ name: this.state.name + " " + this.state.data });    
   }
 
   render() {
-    const { name } = this.state;
+    const { name, data } = this.state;
 
     return (
-      <form
-        className="NewWeather"
-      >
-        <input
-          type="text"
-          value={ name }
-          placeholder="Temperature in the city"
-          onChange={(event) => this.setState({ name: event.target.value })}
-        />
-        <button
-          onClick={this.handleSubmit}
-          disabled={!name}
+      <div>
+        <form
+          className="NewWeather"
         >
-          Submit
+          <input
+            type="text"
+            value={ name }
+            placeholder="Temperature in the city"
+            onChange={(event) => this.setState({ name: event.target.value })}
+          />
+
+          <p className="temp-wrapper">
+            <span className="temp">{ name }  { data }</span>
+            <span className="temp-symbol">°C</span>
+          </p>
+
+          <button
+            onClick={this.handleSubmit}
+            disabled={!name}
+          >
+            Submit
+          </button>
+        </form>
+        <button
+          onClick={this.seveTemper}
+          disabled={!data}
+        >
+          Save
         </button>
-      </form>
+      </div>
     );
   }
 }
